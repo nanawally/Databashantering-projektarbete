@@ -1,4 +1,4 @@
-package se.anna.employeedatabase;
+package se.anna.workplacedatabase;
 
 public class Employee {
     private Integer employeeId;

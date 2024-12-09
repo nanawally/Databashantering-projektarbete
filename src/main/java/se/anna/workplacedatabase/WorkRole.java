@@ -1,4 +1,4 @@
-package se.anna.employeedatabase;
+package se.anna.workplacedatabase;
 
 import java.util.*;
 
@@ -40,7 +40,7 @@ public class WorkRole {
         return salary;
     }
 
-    public Date getCreationDate() {
+    public java.sql.Date getCreationDate() {
         return creationDate;
     }
 
