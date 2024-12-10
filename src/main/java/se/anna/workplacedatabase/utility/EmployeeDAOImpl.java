@@ -19,12 +19,12 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         try {
             conn = JDBCUtil.getConnection();
             String sql = """
-            SELECT e.employee_id, e.name, e.email, e.password, e.role_id, 
-                   wr.title, wr.description, wr.salary, wr.creation_date
-            FROM employee e
-            JOIN work_role wr ON e.role_id = wr.role_id
-            WHERE e.employee_id = ?
-        """;
+                        SELECT e.employee_id, e.name, e.email, e.password, e.role_id, 
+                               wr.title, wr.description, wr.salary, wr.creation_date
+                        FROM employee e
+                        JOIN work_role wr ON e.role_id = wr.role_id
+                        WHERE e.employee_id = ?
+                    """;
             pStmt = conn.prepareStatement(sql);
             pStmt.setInt(1, employeeId);
             rs = pStmt.executeQuery();
@@ -57,6 +57,37 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         return employee;
     }
 
+    public Employee getEmployeeByEmail(String email, WorkRoleDAO workRoleDAO) throws SQLException {
+        Employee employee = null;
+        WorkRole role = null;
+        try {
+            conn = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM employee WHERE email = ?";
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, email);
+            rs = pStmt.executeQuery();
+
+            if (rs.next()) {
+                Integer employeeID = rs.getInt("employee_id");
+                String name = rs.getString("name");
+                String password = rs.getString("password");
+                Integer roleId = rs.getInt("role_id");
+                role = workRoleDAO.getWorkRole(roleId);
+                employee = new Employee(employeeID, name, email, password, role);
+            } else {
+                System.out.println("Employee with email " + email + " not found.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Error retrieving employee by email.", e);
+        } finally {
+            JDBCUtil.closeResultSet(rs);
+            JDBCUtil.closePreparedStatement(pStmt);
+            JDBCUtil.closeConnection(conn);
+        }
+        return employee;
+    }
+
     @Override
     public List<Employee> getallEmployees() throws SQLException {
         List<Employee> employees = new ArrayList<>();
@@ -64,11 +95,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             conn = JDBCUtil.getConnection();
             stmt = conn.createStatement();
             String sql = """
-            SELECT e.employee_id, e.name, e.email, e.password, e.role_id, 
-                   wr.title, wr.description, wr.salary, wr.creation_date
-            FROM employee e
-            JOIN work_role wr ON e.role_id = wr.role_id
-            """;
+                    SELECT e.employee_id, e.name, e.email, e.password, e.role_id, 
+                           wr.title, wr.description, wr.salary, wr.creation_date
+                    FROM employee e
+                    JOIN work_role wr ON e.role_id = wr.role_id
+                    """;
             rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
@@ -149,13 +180,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 //                throw new EmployeeNotFoundException("No employee with the id " +
 //                        employee.getEmployeeId() + " was found.");
 //            }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             JDBCUtil.rollback(conn);
             e.printStackTrace();
             throw e;
-        }
-        finally {
+        } finally {
             JDBCUtil.closePreparedStatement(pStmt);
             JDBCUtil.closeConnection(conn);
         }
@@ -170,7 +199,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             pStmt.setInt(1, employee.getEmployeeId());
 
             int rows = pStmt.executeUpdate();
-            if (rows == 0){
+            if (rows == 0) {
                 throw new SQLException("Employee not found or could not be deleted.");
             } else {
                 System.out.println("Rows affected: " + rows);

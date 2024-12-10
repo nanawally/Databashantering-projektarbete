@@ -1,5 +1,7 @@
 package se.anna.workplacedatabase;
 
+import se.anna.workplacedatabase.employeeUI.EmployeeUI;
+import se.anna.workplacedatabase.employeeUI.ScannerHandler;
 import se.anna.workplacedatabase.utility.*;
 
 import java.sql.Date;
@@ -9,8 +11,11 @@ import java.util.List;
 @SuppressWarnings("LanguageDetectionInspection")
 public class Main {
     public static void main(String[] args) throws SQLException {
+        EmployeeUI employeeUI = new EmployeeUI();
         WorkRoleDAO workRoleDAO = new WorkRoleDAOImpl();
         EmployeeDAO employeeDAO = new EmployeeDAOImpl();
+
+        employeeUI.application();
 
         WorkRole CEO = new WorkRole("CEO",
                 "Big stonk man",
@@ -106,15 +111,15 @@ public class Main {
 //            employeeDAO.insertEmployee(nameofemployeeobject);
             //employeeDAO.insertEmployee(toBe_Deleted);
 
-            //get all employees
-            List<Employee> employees = employeeDAO.getallEmployees();
-            for (Employee employee : employees) {
-                System.out.println(employee);
-            }
+//            //get all employees
+//            List<Employee> employees = employeeDAO.getallEmployees();
+//            for (Employee employee : employees) {
+//                System.out.println(employee);
+//            }
 
-//            //get employee
-//            Employee employee = employeeDAO.getEmployee(1);
-//            System.out.println(employee);
+            //get employee
+            Employee employee = employeeDAO.getEmployee(3);
+            System.out.println(employee);
 
 //            //update employee
 //            Employee employee = employeeDAO.getEmployee(5);
@@ -135,5 +140,4 @@ public class Main {
 
 //make a PersonNotFoundException class, see lektion 5 ca 14:00
 //make a schema.sql file, ask abt it + check lektion 6 pt 2 7:00
-//remember to make application.properties in both main and test
 //ask abt pstmt vs stmt in the method(s) closeStatement()
