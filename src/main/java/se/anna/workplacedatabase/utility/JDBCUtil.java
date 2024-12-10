@@ -30,8 +30,9 @@ public class JDBCUtil {
 //        System.out.println(password);
 
         DriverManager.registerDriver(driver);
-        //SÄTT AUTOCOMMIT TILL FALSE
-        return DriverManager.getConnection(url, user, password);
+        Connection conn = DriverManager.getConnection(url, user, password);
+        conn.setAutoCommit(false);
+        return conn;
     }
 
     public static void closeConnection(Connection conn) {

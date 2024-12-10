@@ -17,7 +17,7 @@ public class WorkRoleDAOImpl implements WorkRoleDAO {
         WorkRole workRole = null;
         try {
             conn = JDBCUtil.getConnection();
-            String sql = "SELECT * FROM workrole WHERE roleid = ?";
+            String sql = "SELECT * FROM work_role WHERE role_id = ?";
             pStmt = conn.prepareStatement(sql);
             pStmt.setInt(1, roleId);
             rs = pStmt.executeQuery();
@@ -30,9 +30,41 @@ public class WorkRoleDAOImpl implements WorkRoleDAO {
                 Date creationDate = rs.getDate("creation_date");
                 workRole = new WorkRole(roleId, title, desc, salary, creationDate);
             }
+            else {
+                System.out.println("Work role not found.");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException();
+        } finally {
+            JDBCUtil.closeResultSet(rs);
+            JDBCUtil.closePreparedStatement(pStmt);
+            JDBCUtil.closeConnection(conn);
+        }
+        return workRole;
+    }
+
+    public WorkRole getWorkRoleByTitle(String title) throws SQLException {
+        WorkRole workRole = null;
+        try {
+            conn = JDBCUtil.getConnection();
+            String sql = "SELECT * FROM work_role WHERE title = ?";
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, title);
+            rs = pStmt.executeQuery();
+
+            if (rs.next()) {
+                Integer roleIdFromDatabase = rs.getInt("role_id");
+                String desc = rs.getString("description");
+                double salary = rs.getDouble("salary");
+                Date creationDate = rs.getDate("creation_date");
+                workRole = new WorkRole(roleIdFromDatabase, title, desc, salary, creationDate);
+            } else {
+                System.out.println("Work role with title " + title + " not found.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new SQLException("Error retrieving Work role by title", e);
         } finally {
             JDBCUtil.closeResultSet(rs);
             JDBCUtil.closePreparedStatement(pStmt);
@@ -89,6 +121,7 @@ public class WorkRoleDAOImpl implements WorkRoleDAO {
 
             JDBCUtil.commit(conn);
         } catch (SQLException e) {
+            JDBCUtil.rollback(conn);
             e.printStackTrace();
             throw e;
         } finally {

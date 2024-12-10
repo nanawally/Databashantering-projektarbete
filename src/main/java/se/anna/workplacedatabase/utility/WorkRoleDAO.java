@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface WorkRoleDAO {
     WorkRole getWorkRole(Integer roleId) throws SQLException;
+    WorkRole getWorkRoleByTitle(String title) throws SQLException;
     List<WorkRole> getallWorkRoles() throws SQLException;
     void insertWorkRole(WorkRole workRole) throws SQLException;
     void updateWorkRole(WorkRole workRole) throws SQLException;
