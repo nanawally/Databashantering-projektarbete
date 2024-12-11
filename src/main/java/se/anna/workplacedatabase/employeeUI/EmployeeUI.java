@@ -56,7 +56,15 @@ public class EmployeeUI {
         String title = scannerHandler.getStringInput("Enter the title of the work role:");
         String description = scannerHandler.getStringInput("Enter the description of the work role:");
         double salary = scannerHandler.getDoubleInput("Enter the salary for the work role:");
-        Date creationDate = Date.valueOf(scannerHandler.getStringInput("Enter the creation date (YYYY-MM-DD):"));
+        Date creationDate = null;
+        while (creationDate == null) {
+            String dateString = scannerHandler.getStringInput("Enter the creation date (YYYY-MM-DD):");
+            try {
+                creationDate = Date.valueOf(dateString);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Invalid date format.");
+            }
+        }
         WorkRole newWorkRole = new WorkRole(title, description, salary, creationDate);
 
         workRoleDAO.insertWorkRole(newWorkRole);
@@ -67,8 +75,10 @@ public class EmployeeUI {
         int roleId = scannerHandler.getIntInput("Enter the role ID of the role you wish to delete.");
         try {
             WorkRole workRole = workRoleDAO.getWorkRole(roleId);
-            workRoleDAO.deleteWorkRole(workRole);
-            System.out.println("Work role deleted.");
+            if (workRole != null) {
+                workRoleDAO.deleteWorkRole(workRole);
+                System.out.println("Work role deleted.");
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -100,34 +110,36 @@ public class EmployeeUI {
         boolean running = true;
         try {
             WorkRole workRole = workRoleDAO.getWorkRole(roleId);
-            System.out.println(workRole);
-            while (running) {
-                updateMenu();
-                int userInput = scannerHandler.getIntInput("What do you wish to do?");
-                switch (userInput) {
-                    case 1 -> {
-                        String newTitle = scannerHandler.getStringInput("Enter the new title for the work role:");
-                        workRole.setTitle(newTitle);
+            if (workRole != null) {
+                System.out.println(workRole);
+                while (running) {
+                    updateMenu();
+                    int userInput = scannerHandler.getIntInput("What do you wish to do?");
+                    switch (userInput) {
+                        case 1 -> {
+                            String newTitle = scannerHandler.getStringInput("Enter the new title for the work role:");
+                            workRole.setTitle(newTitle);
+                        }
+                        case 2 -> {
+                            String newDescription = scannerHandler.getStringInput("Enter the new description for the work role:");
+                            workRole.setDescription(newDescription);
+                        }
+                        case 3 -> {
+                            double newSalary = scannerHandler.getDoubleInput("Enter the new salary for the work role:");
+                            workRole.setSalary(newSalary);
+                        }
+                        case 4 -> {
+                            String newDateInput = scannerHandler.getStringInput("Enter the new creation date (YYYY-MM-DD):");
+                            Date newCreationDate = Date.valueOf(newDateInput);
+                            workRole.setCreationDate(newCreationDate);
+                        }
+                        case 5 -> running = false;
+                        default -> System.out.println("\nInvalid input.");
                     }
-                    case 2 -> {
-                        String newDescription = scannerHandler.getStringInput("Enter the new description for the work role:");
-                        workRole.setDescription(newDescription);
-                    }
-                    case 3 -> {
-                        double newSalary = scannerHandler.getDoubleInput("Enter the new salary for the work role:");
-                        workRole.setSalary(newSalary);
-                    }
-                    case 4 -> {
-                        String newDateInput = scannerHandler.getStringInput("Enter the new creation date (YYYY-MM-DD):");
-                        Date newCreationDate = Date.valueOf(newDateInput);
-                        workRole.setCreationDate(newCreationDate);
-                    }
-                    case 5 -> running = false;
-                    default -> System.out.println("\nInvalid input.");
                 }
+                workRoleDAO.updateWorkRole(workRole);
+                System.out.println(workRole);
             }
-            workRoleDAO.updateWorkRole(workRole);
-            System.out.println(workRole);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -157,8 +169,6 @@ public class EmployeeUI {
                 } else {
                     System.out.println("Incorrect password.");
                 }
-            } else {
-                System.out.println("No employee with the email " + email + " found.");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -59,7 +59,6 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     public Employee getEmployeeByEmail(String email, WorkRoleDAO workRoleDAO) throws SQLException {
         Employee employee = null;
-        WorkRole role = null;
         try {
             conn = JDBCUtil.getConnection();
             String sql = "SELECT * FROM employee WHERE email = ?";
@@ -72,7 +71,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
                 String name = rs.getString("name");
                 String password = rs.getString("password");
                 Integer roleId = rs.getInt("role_id");
-                role = workRoleDAO.getWorkRole(roleId);
+                WorkRole role = workRoleDAO.getWorkRole(roleId);
                 employee = new Employee(employeeID, name, email, password, role);
             } else {
                 System.out.println("Employee with email " + email + " not found.");
