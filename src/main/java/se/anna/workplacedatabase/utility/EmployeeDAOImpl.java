@@ -169,9 +169,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             pStmt.setInt(4, employee.getEmployeeId());
 
             int rows = pStmt.executeUpdate();
-
             JDBCUtil.commit(conn);
-
             if (rows > 0) {
                 System.out.println("Employee updated.");
             }

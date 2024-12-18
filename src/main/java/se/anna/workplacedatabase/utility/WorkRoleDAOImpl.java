@@ -64,7 +64,7 @@ public class WorkRoleDAOImpl implements WorkRoleDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new SQLException("Error retrieving Work role by title", e);
+            throw new SQLException("Error retrieving work role by title", e);
         } finally {
             JDBCUtil.closeResultSet(rs);
             JDBCUtil.closePreparedStatement(pStmt);
@@ -74,7 +74,7 @@ public class WorkRoleDAOImpl implements WorkRoleDAO {
     }
 
     @Override
-    public List<WorkRole> getallWorkRoles() throws SQLException {
+    public List<WorkRole> getAllWorkRoles() throws SQLException {
         List<WorkRole> roles = new ArrayList<>();
         try {
             conn = JDBCUtil.getConnection();
@@ -117,7 +117,7 @@ public class WorkRoleDAOImpl implements WorkRoleDAO {
             pStmt.setDate(4, workRole.getCreationDate());
 
             int rows = pStmt.executeUpdate();
-            System.out.println("Rows affected: " + rows);
+            System.out.println(rows + " work role inserted.");
 
             JDBCUtil.commit(conn);
         } catch (SQLException e) {
@@ -144,15 +144,13 @@ public class WorkRoleDAOImpl implements WorkRoleDAO {
             pStmt.setInt(5, workRole.getRoleId());
 
             int rows = pStmt.executeUpdate();
-
             JDBCUtil.commit(conn);
 
             if (rows > 0) {
-                System.out.println("Workrole updated.");
-//            } else {
-//                throw new WorkRoleNotFoundException("No workrole with the id " +
-//                        workRole.getRoleId() + " was found.");
-//            }
+                System.out.println("Work role updated.");
+            } else {
+                System.out.println("No work role with the id " +
+                        workRole.getRoleId() + " was found.");
             }
         } catch (SQLException e) {
             JDBCUtil.rollback(conn);
@@ -174,16 +172,14 @@ public class WorkRoleDAOImpl implements WorkRoleDAO {
 
             int rows = pStmt.executeUpdate();
             if (rows == 0){
-                throw new SQLException("Workrole not found or could not be deleted.");
+                throw new SQLException("Work role not found or could not be deleted.");
             } else {
-            System.out.println("Rows affected: " + rows);
+            System.out.println(rows + " work role deleted.");
             }
-
-            pStmt.executeUpdate();
             JDBCUtil.commit(conn);
         } catch (SQLException e) {
             JDBCUtil.rollback(conn);
-            throw new RuntimeException("Error deleting workrole", e);
+            throw new RuntimeException("Error deleting work role.", e);
         } finally {
             JDBCUtil.closePreparedStatement(pStmt);
             JDBCUtil.closeConnection(conn);

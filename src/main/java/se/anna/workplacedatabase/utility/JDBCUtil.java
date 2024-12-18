@@ -5,7 +5,7 @@ import java.sql.*;
 import java.util.*;
 
 public class JDBCUtil {
-    private static Properties properties = new Properties();
+    private static final Properties properties = new Properties();
 
     static {
         try {
@@ -16,7 +16,6 @@ public class JDBCUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public static Connection getConnection() throws SQLException {
@@ -24,10 +23,6 @@ public class JDBCUtil {
         String url = properties.getProperty("db.url");
         String user = properties.getProperty("db.user");
         String password = properties.getProperty("db.password");
-
-//        System.out.println(url);
-//        System.out.println(user);
-//        System.out.println(password);
 
         DriverManager.registerDriver(driver);
         Connection conn = DriverManager.getConnection(url, user, password);

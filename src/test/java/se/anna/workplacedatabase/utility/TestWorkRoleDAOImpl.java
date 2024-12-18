@@ -61,7 +61,7 @@ public class TestWorkRoleDAOImpl {
         List<WorkRole> workRoles = new ArrayList<>();
         try {
             workRoleDAO.insertWorkRole(workRole);
-            workRoles = workRoleDAO.getallWorkRoles();
+            workRoles = workRoleDAO.getAllWorkRoles();
             for (WorkRole role : workRoles) {
                 System.out.println(role);
             }

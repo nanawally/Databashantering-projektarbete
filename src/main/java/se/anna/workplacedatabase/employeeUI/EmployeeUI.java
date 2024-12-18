@@ -75,9 +75,11 @@ public class EmployeeUI {
         int roleId = scannerHandler.getIntInput("Enter the role ID of the role you wish to delete.");
         try {
             WorkRole workRole = workRoleDAO.getWorkRole(roleId);
+            System.out.println(workRole);
             if (workRole != null) {
                 workRoleDAO.deleteWorkRole(workRole);
-                System.out.println("Work role deleted.");
+            } else {
+                System.out.println("The chosen work role could not be deleted.");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -96,7 +98,7 @@ public class EmployeeUI {
 
     private static void userShowAllWorkRoles(WorkRoleDAO workRoleDAO) {
         try {
-            List<WorkRole> workRoles = workRoleDAO.getallWorkRoles();
+            List<WorkRole> workRoles = workRoleDAO.getAllWorkRoles();
             for (WorkRole workRole : workRoles) {
                 System.out.println(workRole);
             }
@@ -151,7 +153,7 @@ public class EmployeeUI {
         System.out.println("|--2. Update description-----|");
         System.out.println("|--3. Update salary----------|");
         System.out.println("|--4. Update creation date---|");
-        System.out.println("|--5. Exit-------------------|");
+        System.out.println("|--5. Save and exit----------|");
         System.out.println("*----------------------------*");
     }
 
@@ -164,6 +166,7 @@ public class EmployeeUI {
                 if (password.equals(employee.getPassword())) {
                     System.out.println("Login successful!");
                     System.out.println(employee);
+
                     WorkRole role = employee.getRoleid();
                     System.out.println(role);
                 } else {
