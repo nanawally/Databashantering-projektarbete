@@ -173,10 +173,10 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             if (rows > 0) {
                 System.out.println("Employee updated.");
             }
-//            else {
-//                throw new EmployeeNotFoundException("No employee with the id " +
-//                        employee.getEmployeeId() + " was found.");
-//            }
+            else {
+                System.out.println("No employee with the id " +
+                        employee.getEmployeeId() + " was found.");
+            }
         } catch (SQLException e) {
             JDBCUtil.rollback(conn);
             e.printStackTrace();
